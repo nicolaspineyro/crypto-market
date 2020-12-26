@@ -1,17 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, Text, TouchableOpacity } from 'react-native';
+import { View, StyleSheet, Text, TouchableOpacity, Alert } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
 import axios from 'axios';
 
-const Form = () => {
-    const [currency, setCurrency] = useState('');
-    const [cryptocurrency, setCryptocurrency] = useState('');
+const Form = ({ currency, cryptocurrency, setCurrency, setCryptocurrency, setConsultAPI }) => {
+
     const [cryptocurrencies, setCryptocurrencies] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     const consultAPI = async () => {
-        const url = 'https://min-api.cryptocompare.com/data/top/totalvolfull?limit=10&tsym=USD';
-        const { data: result } = await axios.get(url);
-        setCryptocurrencies(result.Data);
+        try {
+            setIsLoading(true);
+            const url = 'https://min-api.cryptocompare.com/data/top/totalvolfull?limit=10&tsym=USD';
+            const { data: result } = await axios.get(url);
+
+            setCryptocurrencies(result.Data);
+            setIsLoading(false);
+        } catch (error) {
+            setIsLoading(false);
+        }
     }
 
     useEffect(() => {
@@ -19,7 +26,12 @@ const Form = () => {
     }, []);
 
     const handleButton = () => {
-        console.log('cotizando..')
+        if (currency.trim() === '' || cryptocurrency.trim() === '') {
+            Alert.alert('Error', 'Both currencies are required.', [{ text: 'OK' }]);
+            return;
+        } else {
+            setConsultAPI(true);
+        }
     }
 
     return (
@@ -44,7 +56,7 @@ const Form = () => {
             >
                 <Picker.Item label='- Select -' />
                 {cryptocurrencies.map(crypto => {
-                    return (<Picker.Item key={crypto.CoinInfo.Id} label={crypto.CoinInfo.FullName} value={crypto.CoinInfo.FullName} />);
+                    return (<Picker.Item key={crypto.CoinInfo.Id} label={crypto.CoinInfo.FullName} value={crypto.CoinInfo.Name} />);
                 })}
             </Picker>
             <TouchableOpacity style={styles.button} onPress={() => handleButton()}>
@@ -64,7 +76,7 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#3D52D5',
-        marginHorizontal: '25%',
+        marginBottom: '5%',
         padding: '5%',
         borderRadius: 10
     },
@@ -73,6 +85,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Lato-Black',
         textAlign: 'center',
         fontSize: 20,
+        textTransform: 'uppercase'
     }
 })
 export default Form;
