@@ -4,7 +4,8 @@ import {
   ScrollView,
   View,
   Text,
-  Image
+  Image,
+  ActivityIndicator
 } from 'react-native';
 import Header from './components/Header';
 import Form from './components/Form';
@@ -38,7 +39,7 @@ const App = () => {
       setIsLoading(false)
     }
   }
-
+  const activity = isLoading ? <ActivityIndicator size='large' color='#3D52D5' /> : <Price coinPrice={coinPrice} />;
   return (
     <>
       <Header />
@@ -47,17 +48,20 @@ const App = () => {
         source={require('./assets/img/cryptomonedas.png')}
         style={styles.image}
       />
-      <View style={styles.formContainer}>
-        <Form
-          currency={currency}
-          cryptocurrency={cryptocurrency}
-          setCurrency={setCurrency}
-          setCryptocurrency={setCryptocurrency}
-          setConsultAPI={setConsultAPI}
-        />
-        
-      </View>
-      <Price coinPrice={coinPrice} />
+      <ScrollView>
+        <View style={styles.formContainer}>
+          <Form
+            currency={currency}
+            cryptocurrency={cryptocurrency}
+            setCurrency={setCurrency}
+            setCryptocurrency={setCryptocurrency}
+            setConsultAPI={setConsultAPI}
+          />
+
+        </View>
+        {activity}
+      </ScrollView>
+
     </>
   );
 };

@@ -8,7 +8,7 @@ const Form = ({ currency, cryptocurrency, setCurrency, setCryptocurrency, setCon
     const [cryptocurrencies, setCryptocurrencies] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
 
-    const consultAPI = async () => {
+    const getCryptocurrencies = async () => {
         try {
             setIsLoading(true);
             const url = 'https://min-api.cryptocompare.com/data/top/totalvolfull?limit=10&tsym=USD';
@@ -22,7 +22,7 @@ const Form = ({ currency, cryptocurrency, setCurrency, setCryptocurrency, setCon
     }
 
     useEffect(() => {
-        consultAPI();
+        getCryptocurrencies();
     }, []);
 
     const handleButton = () => {
@@ -60,7 +60,7 @@ const Form = ({ currency, cryptocurrency, setCurrency, setCryptocurrency, setCon
                 })}
             </Picker>
             <TouchableOpacity style={styles.button} onPress={() => handleButton()}>
-                <Text style={styles.buttonText}>Cotizar</Text>
+                <Text style={styles.buttonText}>Get Price</Text>
             </TouchableOpacity>
         </View>
     );
@@ -76,8 +76,8 @@ const styles = StyleSheet.create({
     },
     button: {
         backgroundColor: '#3D52D5',
-        marginBottom: '5%',
-        padding: '5%',
+        marginBottom: '2.5%',
+        padding: '2.5%',
         borderRadius: 10
     },
     buttonText: {
